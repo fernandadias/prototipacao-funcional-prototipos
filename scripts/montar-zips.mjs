@@ -1,12 +1,13 @@
-// Monta um zip por protótipo: boilerplate + protótipo + as sete skills.
+// Monta um zip por protótipo: boilerplate + o protótipo.
 //
-// Cada zip é autocontido de propósito. O curso afirma que um protótipo é uma
-// pasta na máquina do aluno, então ele não pode precisar juntar peças de dois
-// lugares para começar.
+// As skills do método NÃO entram aqui. Elas vivem em
+// github.com/fernandadias/prototipacao-funcional-metodo e são instaladas uma
+// vez em ~/.claude/skills, no nível do usuário. Empacotar uma cópia dentro de
+// cada zip congelaria a versão de quem baixou, e nenhuma correção chegaria.
 //
 //   node scripts/montar-zips.mjs
 //
-// Saída em dist-zips/, um zip por protótipo, prontos para anexar numa release.
+// Saída em dist-zips/, prontos para anexar numa release.
 
 import { cp, mkdir, rm, readdir } from 'node:fs/promises'
 import { execFile } from 'node:child_process'
@@ -26,17 +27,11 @@ await mkdir(saida, { recursive: true })
 for (const nome of protos) {
   const tmp = path.join(saida, nome)
 
-  // 1. o boilerplate é a base de todos
+  // o boilerplate é a base de todos
   await cp(path.join(raiz, 'boilerplate'), tmp, { recursive: true })
 
-  // 2. o protótipo por cima, podendo sobrescrever o que for dele
+  // o protótipo por cima, podendo sobrescrever o que for dele
   await cp(path.join(raiz, 'prototipos', nome), tmp, { recursive: true, force: true })
-
-  // 3. as skills e o formato, idênticos em todos os zips
-  const skills = path.join(tmp, '.claude', 'skills')
-  await mkdir(skills, { recursive: true })
-  await cp(path.join(raiz, 'metodo', 'skills'), skills, { recursive: true })
-  await cp(path.join(raiz, 'metodo', 'FORMATO.md'), path.join(skills, 'FORMATO.md'))
 
   await run('zip', ['-qr', `${nome}.zip`, nome], { cwd: saida })
   await rm(tmp, { recursive: true, force: true })

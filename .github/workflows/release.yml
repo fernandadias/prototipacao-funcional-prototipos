@@ -1,4 +1,4 @@
-name: Montar zips do material
+name: Montar zips dos protótipos
 
 # Roda quando uma tag material-vN é criada, monta um zip por protótipo
 # e anexa na release. O aluno baixa sempre da última release, então corrigir
@@ -6,7 +6,7 @@ name: Montar zips do material
 
 on:
   push:
-    tags: ['material-v*']
+    tags: ['prototipos-v*']
   workflow_dispatch:
 
 permissions:
